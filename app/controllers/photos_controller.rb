@@ -19,7 +19,15 @@ class PhotosController < ApplicationController
   def show
     p_id = params.fetch("the_photo_id")
     @photo = Photo.where({:id => p_id }).first
-    render({:template => "photos/details.html.erb"})
+
+    user_id = session.fetch(:user_id)
+    photo_owner_id = @photo.poster.id
+
+    if user_id == photo_owner_id
+      render({:template => "photos/own_details.html.erb"})
+    else
+      render({:template => "photos/other_details.html.erb"})
+    end
   end
 
   def destroy
